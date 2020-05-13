@@ -1,24 +1,13 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const util = require("util");
-
 const notes = require("./db/db.json");
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 const port = process.env.port || 3000;
 
-//-----------------------------------------------------------------------------
-
-function getNotes() {
-    fs.readFile("./db/db.json", "utf-8", (err, data) => {
-        if (err) throw err;
-        return data;
-    });
-}
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 //-----------------------------------------------------------------------------
 
@@ -39,14 +28,24 @@ app.post("/api/notes", (req, res) => {
     
     notes.push(newNote);
 
-    fs.writeFile("./db/db.json", notes, (err) => {
+    fs.writeFile(".db/db.json", notes, (err) => {
         if (err) throw err;
     });
 
     return res.json(newNote);
 });
 
-app.delete("/api/notes/:id", (req, res) => {});
+app.delete("/api/notes/:id", (req, res) => {
+    const noteId = req.params.id;
+
+    const index = notes.indexOf(noteId);
+
+    notes.splice(index, 1);
+
+    fs.writeFile(".db/db.json", notes, (err) => {
+        if (err) throw err;
+    });
+});
 
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "./public/index.html"));
