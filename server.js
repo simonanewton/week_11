@@ -42,11 +42,10 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
     const newNote = req.body;
     
-    const notes = readNotes();
+    const notes = readNotes().push(newNote);
 
-    // create note id
-
-    notes.push(newNote);
+    let index = 1;
+    notes.map(note => note.id = index++);
 
     writeNotes(notes);
 
@@ -56,11 +55,11 @@ app.post("/api/notes", (req, res) => {
 app.delete("/api/notes/:id", (req, res) => {
     const noteId = req.params.id;
 
-    const notes = readNotes().filter(note => {
-        note.id != noteId;
-    });
+    const notes = readNotes().filter(note => note.id != noteId);
 
     writeNotes(notes);
+
+    return res.json(notes);
 });
 
 app.get("*", (req, res) => {
