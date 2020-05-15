@@ -11,6 +11,21 @@ app.use(express.static(__dirname + '/public'));
 
 //-----------------------------------------------------------------------------
 
+function readNotes() {
+    return JSON.parse(fs.readFileSync("./db/db.json", "utf-8", (err, data) => {
+        if (err) throw err;
+        return data;
+    }));
+}
+
+function writeNotes(notes) {
+    fs.writeFile("./db/db.json", JSON.stringify(notes), (err) => {
+        if (err) throw err;
+    });
+}
+
+//-----------------------------------------------------------------------------
+
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "./public/index.html"));
 });
@@ -19,30 +34,21 @@ app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
-app.get("/api/notes", (req, res) => {
-    const notes = JSON.parse(fs.readFileSync("./db/db.json", "utf-8", (err, data) => {
-        if (err) throw err;
-        return data;
-    })); 
 
-    return res.json(notes);
+app.get("/api/notes", (req, res) => {
+    return res.json(readNotes());
 });
 
 app.post("/api/notes", (req, res) => {
     const newNote = req.body;
     
-    const notes = JSON.parse(fs.readFileSync("./db/db.json", "utf-8", (err, data) => {
-        if (err) throw err;
-        return data;
-    })); 
+    const notes = readNotes();
 
-    // newNote.id = Math.floor(Math.random() * 1000);
+    // create note id
 
     notes.push(newNote);
 
-    fs.writeFile("./db/db.json", notes, (err) => {
-        if (err) throw err;
-    });
+    writeNotes(notes);
 
     return res.json(newNote);
 });
@@ -50,18 +56,11 @@ app.post("/api/notes", (req, res) => {
 app.delete("/api/notes/:id", (req, res) => {
     const noteId = req.params.id;
 
-    const notes = JSON.parse(fs.readFileSync("./db/db.json", "utf-8", (err, data) => {
-        if (err) throw err;
-        return data;
-    })); 
-
-    // const index = notes.indexOf(noteId);
-
-    notes = notes.splice(index, 1);
-
-    fs.writeFile("./db/db.json", notes, (err) => {
-        if (err) throw err;
+    const notes = readNotes().filter(note => {
+        note.id != noteId;
     });
+
+    writeNotes(notes);
 });
 
 app.get("*", (req, res) => {
