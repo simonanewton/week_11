@@ -7,7 +7,7 @@ const port = process.env.port || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/docs'));
 
 //-----------------------------------------------------------------------------
 
@@ -27,11 +27,11 @@ function writeNotes(notes) {
 //-----------------------------------------------------------------------------
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "./public/index.html"));
+    res.sendFile(path.join(__dirname, "./docs/index.html"));
 });
 
 app.get("/notes", (req, res) => {
-    res.sendFile(path.join(__dirname, "./public/notes.html"));
+    res.sendFile(path.join(__dirname, "./docs/notes.html"));
 });
 
 
@@ -65,7 +65,7 @@ app.delete("/api/notes/:id", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "./public/index.html"));
+    res.sendFile(path.join(__dirname, "./docs/index.html"));
 });
 
 //-----------------------------------------------------------------------------
