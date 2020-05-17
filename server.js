@@ -19,7 +19,7 @@ function readNotes() {
 }
 
 function writeNotes(notes) {
-    fs.writeFile("./db/db.json", JSON.stringify(notes), (err) => {
+    fs.writeFileSync("./db/db.json", JSON.stringify(notes), (err) => {
         if (err) throw err;
     });
 }
@@ -42,10 +42,12 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
     const newNote = req.body;
     
-    const notes = readNotes().push(newNote);
+    const notes = readNotes();
 
-    let index = 1;
-    notes.map(note => note.id = index++);
+    notes.push(newNote);
+
+    let id = 1;
+    notes.map(note => note.id = id++);
 
     writeNotes(notes);
 
