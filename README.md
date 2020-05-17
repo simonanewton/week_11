@@ -2,7 +2,7 @@
 
 ## Description
 
-This application uses a front-end and back-end structure that allows users to create, save, and delete notes. The back-end is uses the express and fs npm packages to save and retrieve notes from an included JSON file.
+This application uses a front-end and back-end structure that allows users to create, save, and delete notes. The back-end utilizes the express and fs npm packages to dynamically save and retrieve notes from an included JSON file.
 
 ## Table of Contents
 
